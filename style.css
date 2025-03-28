@@ -1,33 +1,31 @@
 body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f4f4f4;
+    background-color: black;
+    color: lime;
+    font-family: monospace;
+    text-align: center;
 }
 
 .container {
-    text-align: center;
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-top: 10%;
 }
 
-.buttons button {
-    margin: 10px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: #4CAF50;
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    margin: 10px 0;
+}
+
+a {
+    color: lime;
+    text-decoration: none;
+    font-size: 1.5em;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+a:hover {
     color: white;
-    border: none;
-    border-radius: 5px;
-}
-
-.buttons button:hover {
-    background-color: #45a049;
 }
