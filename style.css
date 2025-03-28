@@ -1,6 +1,6 @@
 body {
-    background-color: black;
-    color: lime;
+    background-color: #1e1e1e; /* Ciemnoszare tło */
+    color: #00ff00; /* Neonowy zielony tekst */
     font-family: monospace;
     text-align: center;
 }
@@ -19,7 +19,7 @@ li {
 }
 
 a {
-    color: lime;
+    color: #33ff33; /* Jasny zielony */
     text-decoration: none;
     font-size: 1.5em;
     font-weight: bold;
@@ -27,5 +27,5 @@ a {
 }
 
 a:hover {
-    color: white;
+    color: white; /* Efekt hover – biały */
 }
