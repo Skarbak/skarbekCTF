@@ -1,31 +1,54 @@
 body {
-    background-color: #1e1e1e; /* Ciemnoszare tło */
-    color: #00ff00; /* Neonowy zielony tekst */
-    font-family: monospace;
-    text-align: center;
+    background-color: #121212;
+    color: #e0e0e0;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
 }
 
 .container {
-    margin-top: 10%;
+    max-width: 800px;
+    margin: auto;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
+h1, h2 {
+    color: #ffffff;
+    border-bottom: 2px solid #333;
+    padding-bottom: 5px;
 }
 
-li {
-    margin: 10px 0;
+p {
+    line-height: 1.6;
 }
 
-a {
-    color: #33ff33; /* Jasny zielony */
-    text-decoration: none;
-    font-size: 1.5em;
+.code-block {
+    background-color: #1e1e1e;
+    color: #00ff00;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: monospace;
+    overflow-x: auto;
+}
+
+.section {
+    margin-top: 20px;
+}
+
+.toggle-btn {
+    background: #333;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 5px;
     font-weight: bold;
-    transition: color 0.3s;
+    transition: background 0.3s;
 }
 
-a:hover {
-    color: white; /* Efekt hover – biały */
+.toggle-btn:hover {
+    background: #555;
+}
+
+.hidden {
+    display: none;
 }
