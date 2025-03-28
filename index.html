@@ -3,43 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cheese CTF Writeup</title>
+    <title>CTF Challenges</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div class="container">
-        <h1>Cheese CTF Writeup</h1>
-        <p>Connect to the VPN and wait 5–7 minutes for the machine to start.</p>
-
-        <div class="section">
-            <button class="toggle-btn" onclick="toggleSection('enumeration')">📌 Enumeration</button>
-            <div id="enumeration" class="hidden">
-                <p>We start with an Nmap scan and see this...</p>
-                <div class="code-block">
-                    nmap -A -p- 10.10.185.202
-                </div>
+        <h1>CTF Challenges</h1>
+        
+        <div class="profile">
+            <img src="your-image.jpg" alt="Your Icon" class="profile-img">
+            <h2>Your Name</h2>
+            <p>Cybersecurity enthusiast | CTF Player | Ethical Hacker</p>
+            <div class="links">
+                <a href="https://www.linkedin.com/in/yourprofile" target="_blank">LinkedIn</a>
+                <a href="https://tryhackme.com/p/yourprofile" target="_blank">TryHackMe</a>
+                <a href="https://github.com/yourprofile" target="_blank">GitHub</a>
             </div>
         </div>
-
+        
         <div class="section">
-            <button class="toggle-btn" onclick="toggleSection('exploitation')">💀 Exploitation</button>
-            <div id="exploitation" class="hidden">
-                <p>Exploiting a vulnerable service...</p>
-                <div class="code-block">
-                    msfconsole -q -x "use exploit/multi/http/some_exploit; set RHOST 10.10.185.202; exploit"
-                </div>
-            </div>
+            <button class="toggle-btn" onclick="location.href='cheese_ctf.html'">🧀 Cheese CTF</button>
         </div>
-
+        
+        <div class="section">
+            <button class="toggle-btn" onclick="location.href='darknet_ctf.html'">🌑 Darknet CTF</button>
+        </div>
+        
+        <div class="section">
+            <button class="toggle-btn" onclick="location.href='pwnage_ctf.html'">💻 Pwnage CTF</button>
+        </div>
+        
+        <div class="section">
+            <button class="toggle-btn" onclick="location.href='webhack_ctf.html'">🌐 WebHack CTF</button>
+        </div>
+        
+        <div class="section">
+            <button class="toggle-btn" onclick="location.href='reverseme_ctf.html'">🔄 ReverseMe CTF</button>
+        </div>
     </div>
-
-    <script>
-        function toggleSection(id) {
-            var section = document.getElementById(id);
-            section.classList.toggle('hidden');
-        }
-    </script>
-
 </body>
 </html>
