@@ -1,28 +1,322 @@
-
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>mKingdom CTF Writeup</title>
+    <title>mKingdom CTF Writeup 🏰</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
-        <h1>Cheese CTF Writeup</h1>
-        <p>Connect to the VPN and wait 5–7 minutes for the machine to start.</p>
-          <p>Please allow up to 3 minutes for the machine to boot.</p>
+        <h1>mKingdom CTF Writeup 🏰👑</h1>
+        <p>🔌 Connect to the VPN and wait 5–7 minutes for the machine to start.</p>
+        <p>⏳ Please allow up to 3 minutes for the machine to boot.</p>
+        
+        <br><br>
 
+        <!-- 1. INITIAL ENUMERATION -->
         <div class="section">
+            <h2>1. 🔍 Initial Enumeration</h2>
+            
+            <div class="subsection">
+                <h3>1.1 Port Scanning with Nmap</h3>
+                <p>🔎 First, we need to check for open ports on the target machine:</p>
+                <pre><code>nmap --min-rate=10000 -p- -oN ports.txt &lt;TARGET_IP&gt;</code></pre>
+                <p>🚀 This is a fast full-port scan to quickly identify all open ports.</p>
+                <img src="img/mKingdom/nmap.png" alt="Fast nmap scan">
+                
+                <p><code>--min-rate=10000</code> → Ensures fast scanning ⚡</p>
+                <p><code>-p-</code> → Scans all 65,535 ports 🎯</p>
+                <p><code>-oN ports.txt</code> → Saves output to file 💾</p>
+            </div>
+
+            <div class="subsection">
+                <h3>1.2 Investigating Port 85</h3>
+                <p>🔦 Discovered web service running on port 85:</p>
+                <img src="img/mKingdom/web.png" alt="Web app">
+                
+                <h4>Service Identification</h4>
+                <pre><code>nmap -sS -sV -sC -p 85 -oN vulns.txt 10.10.24.10</code></pre>
+                <img src="img/mKingdom/web_info.png" alt="Web info">
+                <p>Identified web server details and potential vulnerabilities.</p>
+            </div>
+        </div>
+
+        <!-- 2. WEB ENUMERATION -->
+        <div class="section">
+            <h2>2. 💥 Web Enumeration</h2>
+            
+            <div class="subsection">
+                <h3>2.1 Directory Bruteforcing</h3>
+                <p>🔍 Using Gobuster to find hidden directories:</p>
+                <pre><code>gobuster dir -u http://10.10.24.10:85 -w /usr/share/wordlists/dirb/big.txt -o gobuster.txt</code></pre>
+                <img src="img/mKingdom/gobuster.png" alt="Gobuster results">
+                <p>🎉 Discovered interesting directory: <b>/app</b></p>
+                <img src="img/mKingdom/toad_web_1.png" alt="Toad Web" width="1200">
+            </div>
+
+            <div class="subsection">
+                <h3>2.2 Admin Panel Access</h3>
+                <p>🔑 Found login page and brute-forced credentials:</p>
+                <img src="img/mKingdom/login_page.png" alt="Login form">
+                <p>🎉 Success with default credentials: <b>ADMIN:PASSWORD</b></p>
+                <img src="img/mKingdom/success_login.png" alt="Success Login" width="1200">
+            </div>
+        </div>
+
+        <!-- 3. INITIAL ACCESS -->
+        <div class="section">
+            <h2>3. 🐚 Gaining Initial Shell</h2>
+            
+            <div class="subsection">
+                <h3>3.1 File Upload Vulnerability</h3>
+                <p>⚙️ Found file upload functionality in admin panel:</p>
+                <img src="img/mKingdom/files_option.png" alt="Files Option" width="1200">
+                
+                <p>❌ Initially blocked PHP files:</p>
+                <img src="img/mKingdom/invalid_extension.png" alt="Invalid Extension" width="1200">
+                
+                <p>🔧 Added .PHP to allowed extensions:</p>
+                <img src="img/mKingdom/valid_extension.png" alt="Valid Extension" width="1200">
+            </div>
+
+            <div class="subsection">
+                <h3>3.2 Reverse Shell Setup</h3>
+                <p>🚀 Uploaded PHP reverse shell:</p>
+                <img src="img/mKingdom/upload_shell.png" alt="upload shell" width="1200">
+                
+                <p>🎧 Set up listener:</p>
+                <pre><code>nc -lvnp 1234</code></pre>
+                
+                <p>💥 Got shell as www-data:</p>
+                <img src="img/mKingdom/shell_www_data.png" alt="reverse Shell" width="1200">
+            </div>
+        </div>
+
+        <!-- 4. PRIVILEGE ESCALATION: TOAD -->
+        <div class="section">
+            <h2>4. 🐸 Privilege Escalation to Toad</h2>
+            
+            <div class="subsection">
+                <h3>4.1 Credential Discovery</h3>
+                <p>🔍 Found credentials in web directory:</p>
+                <img src="img/mKingdom/interesting_files1.png" alt="Files www-data" width="1200">
+                <img src="img/mKingdom/toad_creds.png" alt="Toad credentials" width="1200">
+                
+                <p>🎉 Successfully switched to toad user:</p>
+                <img src="img/mKingdom/toad_login.png" alt="Toad credentials" width="1200">
+            </div>
+
+            <div class="subsection">
+                <h3>4.2 Further Enumeration</h3>
+                <p>🔍 Ran LinPeas to find escalation vectors:</p>
+                <img src="img/mKingdom/linpeas1.png" alt="Toad linpeas" width="1200">
+                
+                <p>🍯 Found PWD_TOKEN for mario:</p>
+                <img src="img/mKingdom/pwd_token.png" alt="pwd token">
+            </div>
+        </div>
+
+        <!-- 5. PRIVILEGE ESCALATION: MARIO -->
+        <div class="section">
+            <h2>5. 🎮 Privilege Escalation to Mario</h2>
+            
+            <div class="subsection">
+                <h3>5.1 Decoding Credentials</h3>
+                <p>🔓 Decoded base64 token using CyberChef:</p>
+                <img src="img/mKingdom/cyberchef.png" alt="pwd token">
+                
+                <p>🎉 Logged in as mario:</p>
+                <img src="img/mKingdom/mario_login.png" alt="Mario login">
+            </div>
+
+            <div class="subsection">
+                <h3>5.2 Writable /etc/hosts</h3>
+                <p>✍️ Discovered writable /etc/hosts file:</p>
+                <img src="img/mKingdom/etc_host.png" alt="Writable File">
+                
+                <p>🔧 Modified to point to our IP:</p>
+                <img src="img/mKingdom/etc_host_edited.png" alt="Writable File edited">
+            </div>
+        </div>
+
+        <!-- 6. ROOT ACCESS -->
+        <div class="section">
+            <h2>6. 👑 Root Access</h2>
+            
+            <div class="subsection">
+                <h3>6.1 Capturing Request</h3>
+                <p>📡 Monitored traffic with Wireshark:</p>
+                <img src="img/mKingdom/wireshark.png" alt="Wireshark">
+                
+                <p>🎯 Server requested counter.sh on port 85:</p>
+                <img src="img/mKingdom/port_85.png" alt="port 85">
+            </div>
+
+            <div class="subsection">
+                <h3>6.2 Delivering Root Shell</h3>
+                <p>💣 Created malicious counter.sh:</p>
+                <img src="img/mKingdom/counter.png" alt="Counter">
+                
+                <p>🎧 Set up new listener for root shell:</p>
+                <pre><code>nc -lvnp 7894</code></pre>
+                
+                <p>👑 Successfully caught root shell:</p>
+                <img src="img/mKingdom/root_shell.png" alt="Root Shell">
+            </div>
+
+            <div class="subsection">
+                <h3>6.3 Capturing Flags</h3>
+                <p>🔒 Couldn't directly read flag files:</p>
+                <img src="img/mKingdom/no_flags.png" alt="No flags">
+                
+                <p>💡 Copied to /tmp to read:</p>
+                <img src="img/mKingdom/flags.png" alt="flags">
+                
+                <p>🏆 Flags captured successfully!</p>
+            </div>
         </div>
 
         <div class="section">
+            <h2>🙏 Conclusion</h2>
+            <p>This CTF involved:</p>
+            <ol>
+                <li>Web enumeration and admin panel access</li>
+                <li>File upload vulnerability exploitation</li>
+                <li>Horizontal privilege escalation (www-data → toad)</li>
+                <li>Vertical privilege escalation (toad → mario → root)</li>
+                <li>Abusing writable system files for root access</li>
+            </ol>
+            <p>Great learning experience about chain exploitation!</p>
         </div>
 
     </div>
 
-
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create navigation buttons container
+            const navContainer = document.createElement('div');
+            navContainer.id = 'section-nav';
+            navContainer.style.position = 'fixed';
+            navContainer.style.top = '20px';
+            navContainer.style.right = '20px';
+            navContainer.style.backgroundColor = '#2a2a2a';
+            navContainer.style.padding = '10px';
+            navContainer.style.borderRadius = '5px';
+            navContainer.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+            navContainer.style.zIndex = '1000';
+            
+            // Create title for navigation
+            const navTitle = document.createElement('h3');
+            navTitle.textContent = 'Jump to Section';
+            navTitle.style.marginTop = '0';
+            navTitle.style.marginBottom = '10px';
+            navTitle.style.color = '#ffffff';
+            navContainer.appendChild(navTitle);
+            
+            // Get all sections
+            const sections = document.querySelectorAll('.section');
+            
+            // Create button for each section
+            sections.forEach(section => {
+                const button = document.createElement('button');
+                button.textContent = section.querySelector('h2').textContent;
+                button.style.display = 'block';
+                button.style.width = '100%';
+                button.style.marginBottom = '5px';
+                button.style.padding = '8px 12px';
+                button.style.backgroundColor = '#3498db';
+                button.style.color = 'white';
+                button.style.border = 'none';
+                button.style.borderRadius = '4px';
+                button.style.cursor = 'pointer';
+                button.style.transition = 'background-color 0.3s';
+                
+                button.onmouseover = function() {
+                    this.style.backgroundColor = '#2980b9';
+                };
+                button.onmouseout = function() {
+                    this.style.backgroundColor = '#3498db';
+                };
+                
+                button.onclick = function() {
+                    // Hide all sections
+                    sections.forEach(s => s.style.display = 'none');
+                    // Show selected section
+                    section.style.display = 'block';
+                    // Scroll to the section
+                    section.scrollIntoView({ behavior: 'smooth' });
+                };
+                
+                navContainer.appendChild(button);
+            });
+            
+            // Add "Show All" button
+            const showAllButton = document.createElement('button');
+            showAllButton.textContent = 'Show All Sections';
+            showAllButton.style.display = 'block';
+            showAllButton.style.width = '100%';
+            showAllButton.style.marginTop = '10px';
+            showAllButton.style.padding = '8px 12px';
+            showAllButton.style.backgroundColor = '#2ecc71';
+            showAllButton.style.color = 'white';
+            showAllButton.style.border = 'none';
+            showAllButton.style.borderRadius = '4px';
+            showAllButton.style.cursor = 'pointer';
+            showAllButton.style.transition = 'background-color 0.3s';
+            
+            showAllButton.onmouseover = function() {
+                this.style.backgroundColor = '#27ae60';
+            };
+            showAllButton.onmouseout = function() {
+                this.style.backgroundColor = '#2ecc71';
+            };
+            
+            showAllButton.onclick = function() {
+                sections.forEach(s => s.style.display = 'block');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+            
+            navContainer.appendChild(showAllButton);
+        
+            // Add "Back to CTF's" button
+            const backButton = document.createElement('button');
+            backButton.textContent = 'Back to CTF\'s';
+            backButton.style.display = 'block';
+            backButton.style.width = '100%';
+            backButton.style.marginTop = '10px';
+            backButton.style.padding = '8px 12px';
+            backButton.style.backgroundColor = '#e74c3c';
+            backButton.style.color = 'white';
+            backButton.style.border = 'none';
+            backButton.style.borderRadius = '4px';
+            backButton.style.cursor = 'pointer';
+            backButton.style.transition = 'background-color 0.3s';
+            
+            backButton.onmouseover = function() {
+                this.style.backgroundColor = '#c0392b';
+            };
+            backButton.onmouseout = function() {
+                this.style.backgroundColor = '#e74c3c';
+            };
+            
+            backButton.onclick = function() {
+                window.location.href = 'ctf.html';
+            };
+            
+            navContainer.appendChild(backButton);
+            
+            // Add navigation to the body
+            document.body.appendChild(navContainer);
+            
+            // Initially hide all sections except the first one
+            sections.forEach((section, index) => {
+                if (index !== 0) {
+                    section.style.display = 'none';
+                }
+            });
+        });
+        </script>
 </body>
 </html>
